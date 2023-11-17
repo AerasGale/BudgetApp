@@ -93,6 +93,21 @@ public class AccountRepo {
                 }
             }
         });
+    }
+
+    public void deleteByName(String name){
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                List<Account> accounts = allAccounts.getValue();
+                for (Account a: accounts) {
+                    if(a.getAccountName().equals(name)){
+                        accountDao.deleteOne(a);
+                        break;
+                    }
+                }
+            }
+        });
 
     }
 }

@@ -4,11 +4,13 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment implements RecyclerViewInterface {
-
+    private static final String TAG = "HomeFragment";
     private FragmentHomeBinding binding;
     private AccountViewModel accountViewModel;
     private List<String> accountNames;
@@ -57,6 +59,7 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
             @Override
             public void onChanged(List<Account> accounts) {
                 adapter.setAccounts(accounts);
+
             }
         });
         accountViewModel.getAllAccountNames().observe(getViewLifecycleOwner(), new Observer<List<String>>() {
@@ -129,18 +132,10 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
                 popupWindow.dismiss();
             }
         });
-
-
     }
 
     @Override
     public void onItemLongClick(int position) {
-        Account accountToRemove = accountViewModel.getAccountByName(accountNames.get(position)).getValue();
-        if(accountToRemove!= null){
-            accountViewModel.deleteOne(accountToRemove);
-        }
-        else {
-            Toast.makeText(this.getContext(), "Somehow null???", Toast.LENGTH_SHORT).show();
-        }
+        accountViewModel.deleteByName(accountNames.get(position));
     }
 }

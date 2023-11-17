@@ -29,11 +29,8 @@ public class AccountViewModel extends AndroidViewModel {
     public void insertOne(Account account){
         repo.insertOne(account);
     }
-    public void updateOne(Account account){
-        repo.updateOne(account);
-    }
-    public void deleteOne(Account account){
-        repo.deleteOne(account);
+    public void deleteByName(String name){
+        repo.deleteByName(name);
     }
     public void setActiveAccount(String accName){
         repo.setActiveAccount(accName);
