@@ -22,17 +22,21 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.budgetapp.adapter.AccountAdapter;
+import com.example.budgetapp.adapter.RecyclerViewInterface;
 import com.example.budgetapp.databinding.FragmentHomeBinding;
 import com.example.budgetapp.entity.Account;
 import com.example.budgetapp.viewmodel.AccountViewModel;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements RecyclerViewInterface {
 
     private FragmentHomeBinding binding;
     private AccountViewModel accountViewModel;
+    private List<String> accountNames;
+    private AccountAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,17 +48,28 @@ public class HomeFragment extends Fragment {
         recyclerAccounts.setLayoutManager( new LinearLayoutManager(this.getContext()));
         recyclerAccounts.setHasFixedSize(true);
 
-        final AccountAdapter adapter = new AccountAdapter();
+        adapter = new AccountAdapter(this.getContext(), this);
         recyclerAccounts.setAdapter(adapter);
 
         accountViewModel = new ViewModelProvider(this.getActivity()).get(AccountViewModel.class);
+        accountNames = new ArrayList<>();
         accountViewModel.getAllAccounts().observe(getViewLifecycleOwner(), new Observer<List<Account>>() {
             @Override
             public void onChanged(List<Account> accounts) {
                 adapter.setAccounts(accounts);
             }
         });
-
+        accountViewModel.getAllAccountNames().observe(getViewLifecycleOwner(), new Observer<List<String>>() {
+            @Override
+            public void onChanged(List<String> strings) {
+                for (String s : strings) {
+                    if (!accountNames.contains(s)){
+                        accountNames.add(s);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+        });
         Button btnAddPopup = binding.btnAddPopup;
         btnAddPopup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,5 +131,16 @@ public class HomeFragment extends Fragment {
         });
 
 
+    }
+
+    @Override
+    public void onItemLongClick(int position) {
+        Account accountToRemove = accountViewModel.getAccountByName(accountNames.get(position)).getValue();
+        if(accountToRemove!= null){
+            accountViewModel.deleteOne(accountToRemove);
+        }
+        else {
+            Toast.makeText(this.getContext(), "Somehow null???", Toast.LENGTH_SHORT).show();
+        }
     }
 }

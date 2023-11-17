@@ -1,5 +1,6 @@
 package com.example.budgetapp.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +17,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountViewHolder> {
+    private final Context context;
+    private final RecyclerViewInterface recyclerViewInterface;
     private List<Account> accounts = new ArrayList<>();
+
+    public AccountAdapter(Context context, RecyclerViewInterface recyclerViewInterface) {
+        this.context = context;
+        this.recyclerViewInterface = recyclerViewInterface;
+    }
 
     @NonNull
     @Override
     public AccountViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycleritem_account, parent, false);
-        return new AccountViewHolder(itemView);
+        return new AccountViewHolder(itemView, recyclerViewInterface);
     }
 
     @Override
@@ -47,11 +55,24 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
         private TextView accountName;
         private TextView accountBalance;
 
-        public AccountViewHolder(@NonNull View itemView) {
+        public AccountViewHolder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
             super(itemView);
             accountIcon = itemView.findViewById(R.id.accountIcon);
             accountName =  itemView.findViewById(R.id.accountName);
             accountBalance =  itemView.findViewById(R.id.accountBalance);
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if(recyclerViewInterface != null){
+                        int pos = getAdapterPosition();
+                        if(pos != RecyclerView.NO_POSITION){
+                            recyclerViewInterface.onItemLongClick(pos);
+                        }
+                    }
+                    return true;
+                }
+            });
         }
     }
 }
