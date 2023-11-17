@@ -1,0 +1,124 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "18fe9614b74645d1e29138bc59d37c7d",
+    "entities": [
+      {
+        "tableName": "accounts",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`account_name` TEXT NOT NULL, `account_balance` INTEGER, `icon_id` INTEGER NOT NULL, `active_account` INTEGER NOT NULL, PRIMARY KEY(`account_name`))",
+        "fields": [
+          {
+            "fieldPath": "accountName",
+            "columnName": "account_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "accountBalance",
+            "columnName": "account_balance",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "iconResId",
+            "columnName": "icon_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isActive",
+            "columnName": "active_account",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "account_name"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "transactions",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`trx_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `account_name` TEXT, `transaction_type` TEXT, `entry_time` INTEGER, `description` TEXT, `amount` INTEGER, FOREIGN KEY(`account_name`) REFERENCES `accounts`(`account_name`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "trxId",
+            "columnName": "trx_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "accountName",
+            "columnName": "account_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "trxType",
+            "columnName": "transaction_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "entryTime",
+            "columnName": "entry_time",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "amount",
+            "columnName": "amount",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "trx_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_transactions_account_name",
+            "unique": false,
+            "columnNames": [
+              "account_name"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_transactions_account_name` ON `${TABLE_NAME}` (`account_name`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "accounts",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "account_name"
+            ],
+            "referencedColumns": [
+              "account_name"
+            ]
+          }
+        ]
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '18fe9614b74645d1e29138bc59d37c7d')"
+    ]
+  }
+}

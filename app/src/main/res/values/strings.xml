@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">BudgetApp</string>
+    <string name="key_db_init_status">INIT_STATUS</string>
+    <string-array name="db_init_status">
+        <item>NOT_INIT</item>
+        <item>HAS_INIT</item>
+    </string-array>
+
+    <string name="home_fragment">This is home</string>
+    <string name="records_fragment">This is records</string>
+    <string name="settings_fragment">This is settings</string>
+    <string name="label_amount">Amount</string>
+    <string name="label_income">Income</string>
+    <string name="label_expense">Expense</string>
+    <string name="label_in_account">in Account:</string>
+    <string name="label_add">Add</string>
+    <string name="description_account_icon">account_icon</string>
+    <string name="label_account_name">Account name</string>
+    <string name="label_starting_balance">Starting balance</string>
+    <string name="label_add_account">Add Account</string>
+
+    <string-array name="default_account_names">
+        <item>Bank</item>
+        <item>Cash</item>
+        <item>Card</item>
+    </string-array>
+
+</resources>

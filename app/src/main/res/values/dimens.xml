@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="label_txt_size">16sp</dimen>
+    <dimen name="container_edge_margin">16dp</dimen>
+    <dimen name="between_element_margin">8dp</dimen>
+    <dimen name="txt_box_min_height">48dp</dimen>
+
+</resources>
