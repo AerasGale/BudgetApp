@@ -1,15 +1,11 @@
 package com.example.budgetapp.repository;
 
 import android.app.Application;
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
-import androidx.room.Query;
 
-import com.example.budgetapp.dao.AccountDao;
+import com.example.budgetapp.repository.dao.AccountDao;
 import com.example.budgetapp.database.BudgetDatabase;
 import com.example.budgetapp.entity.Account;
 

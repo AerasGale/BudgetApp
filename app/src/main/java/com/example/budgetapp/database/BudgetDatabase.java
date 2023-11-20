@@ -1,7 +1,6 @@
 package com.example.budgetapp.database;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -12,8 +11,8 @@ import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.budgetapp.R;
-import com.example.budgetapp.dao.AccountDao;
-import com.example.budgetapp.dao.TransactionDao;
+import com.example.budgetapp.repository.dao.AccountDao;
+import com.example.budgetapp.repository.dao.TransactionDao;
 import com.example.budgetapp.entity.Account;
 import com.example.budgetapp.entity.Transaction;
 import com.example.budgetapp.utils.roomutils.RoomTypeConverters;
