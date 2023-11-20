@@ -52,29 +52,16 @@ public class AddFragment extends Fragment {
         accountViewModel = new ViewModelProvider(this.getActivity()).get(AccountViewModel.class);
         accountNames = new ArrayList<>();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item, accountNames);
-        accountViewModel.getAllAccountNames().observe(getViewLifecycleOwner(), new Observer<List<String>>() {
-            @Override
-            public void onChanged(List<String> strings) {
-                if(!accountNames.containsAll(strings))
-                    accountNames.addAll(strings);
-                adapter.notifyDataSetChanged();
-                Log.d(TAG, "onChanged: Account names are " + strings);
+        accountViewModel.getAllAccountNames().observe(getViewLifecycleOwner(), strings -> {
+            for (String s : strings) {
+                if (!accountNames.contains(s)){
+                    accountNames.add(s);
+                }
             }
+            adapter.notifyDataSetChanged();
+            Log.d(TAG, "onChanged: Account names are " + strings);
         });
-        accountViewModel.getActiveAccount().observe(getViewLifecycleOwner(), new Observer<Account>() {
-            @Override
-            public void onChanged(Account account) {
-                activeAccount = account;
-
-                String msg;
-                if(accountViewModel.isActiveNull()){
-                    msg = "Active is null";
-                }else
-                    msg = "Active is not null";
-
-                Log.d(TAG, "onChanged: " + msg);
-            }
-        });
+        accountViewModel.getActiveAccount().observe(getViewLifecycleOwner(), account -> activeAccount = account);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         accSelector.setAdapter(adapter);
 

@@ -100,6 +100,7 @@ public class AccountRepo {
             @Override
             public void run() {
                 List<Account> accounts = allAccounts.getValue();
+                Log.d(TAG, "deleteByName->run: Name to delete is " + name);
                 for (Account a: accounts) {
                     if(a.getAccountName().equals(name)){
                         accountDao.deleteOne(a);
