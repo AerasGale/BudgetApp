@@ -1,11 +1,8 @@
 package com.example.budgetapp;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
@@ -15,21 +12,16 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.budgetapp.database.BudgetDatabase;
 import com.example.budgetapp.databinding.FragmentAddBinding;
 import com.example.budgetapp.entity.Account;
-import com.example.budgetapp.repository.AccountRepo;
 import com.example.budgetapp.viewmodel.AccountViewModel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class AddFragment extends Fragment {
@@ -65,14 +57,11 @@ public class AddFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         accSelector.setAdapter(adapter);
 
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText etAmount = binding.etAmount;
-                RadioGroup rgTransactionType = binding.rgTransactionType;
+        addButton.setOnClickListener(v -> {
+            EditText etAmount = binding.etAmount;
+            RadioGroup rgTransactionType = binding.rgTransactionType;
 
 
-            }
         });
         accSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
