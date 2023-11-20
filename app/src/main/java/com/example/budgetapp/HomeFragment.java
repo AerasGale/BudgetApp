@@ -85,7 +85,7 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
 
     private void CreatePopupWindow(View v){
         LayoutInflater inflater = (LayoutInflater)v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.popup_add_account, binding.getRoot());
+        View popupView = inflater.inflate(R.layout.popup_add_account, null);
 
         PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT, true);
         popupWindow.showAtLocation(v, Gravity.CENTER, 0,0);
@@ -129,6 +129,10 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
             public void onClick(View v) {
                 if(etAccountName.getText().length()<=0){
                     Toast.makeText(v.getContext(), "Enter an account name.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(accountNames.contains(etAccountName.getText().toString())){
+                    Toast.makeText(v.getContext(), "Account names cannot repeat.", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 Account accountToAdd = new Account(etAccountName.getText().toString(), new BigDecimal(etStartingBalance.getText().toString()),iconResId[0],false);
