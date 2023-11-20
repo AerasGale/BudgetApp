@@ -38,6 +38,7 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
     private static final String TAG = "HomeFragment";
     private FragmentHomeBinding binding;
     private AccountViewModel accountViewModel;
+    private List<String> accountNames;
     private AccountAdapter adapter;
 
     @Override
@@ -57,6 +58,10 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
         accountViewModel.getAllAccounts().observe(getViewLifecycleOwner(), accounts -> {
             adapter.setAccounts(accounts);
             adapter.notifyDataSetChanged();
+            accountNames = new ArrayList<>();
+            for(Account a: this.adapter.getAccounts()){
+                accountNames.add(a.getAccountName());
+            }
 
         });
         Button btnAddPopup = binding.btnAddPopup;
@@ -103,7 +108,6 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
         });
 
         btnAddAccount.setOnClickListener(v1 -> {
-            List<String> accountNames = new ArrayList<>();
             for(Account a: this.adapter.getAccounts()){
                 accountNames.add(a.getAccountName());
             }
@@ -128,11 +132,6 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
 
     @Override
     public void onItemLongClick(int position) {
-        List<String> accountNames = new ArrayList<>();
-        for(Account a: this.adapter.getAccounts()){
-            accountNames.add(a.getAccountName());
-        }
-
         Log.d(TAG, "onItemLongClick: Current list of names are " + accountNames);
         if(accountNames!=null){
             String accName = accountNames.get(position);
