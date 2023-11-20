@@ -4,13 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment implements RecyclerViewInterface {
-    private static final String TAG = "HomeFragment";
     private FragmentHomeBinding binding;
     private AccountViewModel accountViewModel;
     private List<String> accountNames;
@@ -88,7 +85,7 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
 
     private void CreatePopupWindow(View v){
         LayoutInflater inflater = (LayoutInflater)v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.popup_add_account, null);
+        View popupView = inflater.inflate(R.layout.popup_add_account, binding.getRoot());
 
         PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT, true);
         popupWindow.showAtLocation(v, Gravity.CENTER, 0,0);
@@ -97,6 +94,9 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
         EditText etStartingBalance = popupView.findViewById(R.id.etStartingBalance);
         Spinner spnIcon = popupView.findViewById(R.id.spnIcon);
         Button btnAddAccount = popupView.findViewById(R.id.btnAddAccount);
+
+        etAccountName.requestFocus();
+        
         final int[] iconResId = new int[1];
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(v.getContext(), R.array.default_account_names, android.R.layout.simple_spinner_item);
@@ -127,6 +127,10 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
         btnAddAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(etAccountName.getText().length()<=0){
+                    Toast.makeText(v.getContext(), "Enter an account name.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Account accountToAdd = new Account(etAccountName.getText().toString(), new BigDecimal(etStartingBalance.getText().toString()),iconResId[0],false);
                 accountViewModel.insertOne(accountToAdd);
                 popupWindow.dismiss();

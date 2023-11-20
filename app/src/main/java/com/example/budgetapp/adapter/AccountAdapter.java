@@ -1,6 +1,7 @@
 package com.example.budgetapp.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,7 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
         notifyDataSetChanged();
     }
     public static class AccountViewHolder extends RecyclerView.ViewHolder{
+        private static final String TAG = "AccountViewHolder";
         private ImageView accountIcon;
         private TextView accountName;
         private TextView accountBalance;
@@ -69,6 +71,7 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
                         if(pos != RecyclerView.NO_POSITION){
                             recyclerViewInterface.onItemLongClick(pos);
                         }
+                        Log.d(TAG, "onLongClick: Selected position" + pos);
                     }
                     return true;
                 }
