@@ -13,7 +13,6 @@ import com.example.budgetapp.repository.AccountRepo;
 import java.util.List;
 
 public class AccountViewModel extends AndroidViewModel {
-    private static final String TAG = "AccountViewModel";
     private AccountRepo repo;
     private LiveData<List<Account>> allAccounts;
     private LiveData<List<String>> allAccountNames;
@@ -38,12 +37,6 @@ public class AccountViewModel extends AndroidViewModel {
     public  LiveData<Account> getActiveAccount(){
         return activeAccount;
     }
-    public boolean isActiveNull(){
-        if(activeAccount==null)
-            return true;
-        else
-            return false;
-    }
     public LiveData<List<Account>> getAllAccounts() {
         return allAccounts;
     }
@@ -51,14 +44,8 @@ public class AccountViewModel extends AndroidViewModel {
     public LiveData<List<String>> getAllAccountNames() {
         return allAccountNames;
     }
-
     public LiveData<Account> getAccountByName(String name){
         LiveData<Account> acc =  repo.getAccountByName(name);
-        String logmsg = "Account is not null";
-        if(acc == null){
-            logmsg = "Account is null";
-        }
-        Log.d(TAG, "getAccountByName: " + logmsg);
         return acc;
     }
 

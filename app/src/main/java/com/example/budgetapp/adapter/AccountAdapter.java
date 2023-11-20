@@ -63,18 +63,15 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
             accountName =  itemView.findViewById(R.id.accountName);
             accountBalance =  itemView.findViewById(R.id.accountBalance);
 
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    if(recyclerViewInterface != null){
-                        int pos = getAdapterPosition();
-                        if(pos != RecyclerView.NO_POSITION){
-                            recyclerViewInterface.onItemLongClick(pos);
-                        }
-                        Log.d(TAG, "onLongClick: Selected position" + pos);
+            itemView.setOnLongClickListener(v -> {
+                if(recyclerViewInterface != null){
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION){
+                        recyclerViewInterface.onItemLongClick(pos);
                     }
-                    return true;
+                    Log.d(TAG, "onLongClick: Selected position" + pos);
                 }
+                return true;
             });
         }
     }

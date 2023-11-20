@@ -52,33 +52,20 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
 
         accountViewModel = new ViewModelProvider(this.getActivity()).get(AccountViewModel.class);
         accountNames = new ArrayList<>();
-        accountViewModel.getAllAccounts().observe(getViewLifecycleOwner(), new Observer<List<Account>>() {
-            @Override
-            public void onChanged(List<Account> accounts) {
-                adapter.setAccounts(accounts);
-
-            }
-        });
-        accountViewModel.getAllAccountNames().observe(getViewLifecycleOwner(), new Observer<List<String>>() {
-            @Override
-            public void onChanged(List<String> strings) {
-                for (String s : strings) {
-                    if (!accountNames.contains(s)){
-                        accountNames.add(s);
-                    }
+        accountViewModel.getAllAccounts().observe(getViewLifecycleOwner(), accounts -> adapter.setAccounts(accounts));
+        accountViewModel.getAllAccountNames().observe(getViewLifecycleOwner(), strings -> {
+            int sizeBefore = accountNames.size();
+            int numberAdded = 0;
+            for (String s : strings) {
+                if (!accountNames.contains(s)){
+                    accountNames.add(s);
+                    numberAdded++;
                 }
-                adapter.notifyDataSetChanged();
             }
+            adapter.notifyItemRangeInserted(sizeBefore, numberAdded);
         });
         Button btnAddPopup = binding.btnAddPopup;
-        btnAddPopup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CreatePopupWindow(v);
-            }
-        });
-
-
+        btnAddPopup.setOnClickListener(v -> CreatePopupWindow(v));
 
         return root;
     }
@@ -115,7 +102,6 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
                     case "Card":
                         iconResId[0] = R.drawable.ic_card;
                 }
-                Toast.makeText(v.getContext(), iconResId[0], Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -144,6 +130,9 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
 
     @Override
     public void onItemLongClick(int position) {
+
+        String accName = accountNames.get(position);
+        Toast.makeText(this.getContext(), "Item in position " + position + " is called " + accName, Toast.LENGTH_SHORT).show();
         accountViewModel.deleteByName(accountNames.get(position));
     }
 }
