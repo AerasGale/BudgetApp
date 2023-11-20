@@ -49,8 +49,8 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
 
     public void setAccounts(List<Account> accounts){
         this.accounts = accounts;
-        notifyDataSetChanged();
     }
+    public List<Account> getAccounts(){return this.accounts;}
     public static class AccountViewHolder extends RecyclerView.ViewHolder{
         private static final String TAG = "AccountViewHolder";
         private ImageView accountIcon;

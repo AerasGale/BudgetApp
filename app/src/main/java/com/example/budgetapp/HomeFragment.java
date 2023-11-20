@@ -1,5 +1,6 @@
 package com.example.budgetapp;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -31,12 +32,12 @@ import com.example.budgetapp.viewmodel.AccountViewModel;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment implements RecyclerViewInterface {
     private static final String TAG = "HomeFragment";
     private FragmentHomeBinding binding;
     private AccountViewModel accountViewModel;
-    private LiveData<List<String>> accountNames;
     private AccountAdapter adapter;
 
     @Override
@@ -52,15 +53,11 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
         adapter = new AccountAdapter(this.getContext(), this);
         recyclerAccounts.setAdapter(adapter);
 
-        accountViewModel = new ViewModelProvider(this.getActivity()).get(AccountViewModel.class);
-        accountNames = accountViewModel.getAllAccountNames();
-        accountViewModel.getAllAccounts().observe(getViewLifecycleOwner(), accounts -> adapter.setAccounts(accounts));
-        accountViewModel.getAllAccountNames().observe(getViewLifecycleOwner(), strings -> {
-            if(strings.size()==1){
-                adapter.notifyItemInserted(adapter.getItemCount());
-            }else {
-                adapter.notifyDataSetChanged();
-            }
+        accountViewModel = new ViewModelProvider(this.requireActivity()).get(AccountViewModel.class);
+        accountViewModel.getAllAccounts().observe(getViewLifecycleOwner(), accounts -> {
+            adapter.setAccounts(accounts);
+            adapter.notifyDataSetChanged();
+
         });
         Button btnAddPopup = binding.btnAddPopup;
         btnAddPopup.setOnClickListener(v -> CreatePopupWindow(v));
@@ -101,19 +98,25 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
                         iconResId[0] = R.drawable.ic_card;
                 }
             }
-
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
 
         btnAddAccount.setOnClickListener(v1 -> {
+            List<String> accountNames = new ArrayList<>();
+            for(Account a: this.adapter.getAccounts()){
+                accountNames.add(a.getAccountName());
+            }
+
+            if(accountNames==null){
+                Toast.makeText(v1.getContext(), "accountNames is null", Toast.LENGTH_SHORT).show();
+                return;
+            }
             if(etAccountName.getText().length()<=0){
                 Toast.makeText(v1.getContext(), "Enter an account name.", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if(accountNames.getValue().contains(etAccountName.getText().toString())){
+            if(accountNames.contains(etAccountName.getText().toString())){
                 Toast.makeText(v1.getContext(), "Account names cannot repeat.", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -125,13 +128,18 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
 
     @Override
     public void onItemLongClick(int position) {
-        List<String> accNames = accountNames.getValue();
+        List<String> accountNames = new ArrayList<>();
+        for(Account a: this.adapter.getAccounts()){
+            accountNames.add(a.getAccountName());
+        }
 
-        Log.d(TAG, "onItemLongClick: Current list of names are " + accNames);
-        if(accNames!=null){
-            String accName = accNames.get(position);
+        Log.d(TAG, "onItemLongClick: Current list of names are " + accountNames);
+        if(accountNames!=null){
+            String accName = accountNames.get(position);
             Toast.makeText(this.getContext(), "Item in position " + position + " is called " + accName, Toast.LENGTH_SHORT).show();
-            accountViewModel.deleteByName(accNames.get(position));
+
+
+            accountViewModel.deleteByName(accountNames.get(position));
 
         }
     }
