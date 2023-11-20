@@ -4,11 +4,12 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,9 +33,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment implements RecyclerViewInterface {
+    private static final String TAG = "HomeFragment";
     private FragmentHomeBinding binding;
     private AccountViewModel accountViewModel;
-    private List<String> accountNames;
+    private LiveData<List<String>> accountNames;
     private AccountAdapter adapter;
 
     @Override
@@ -51,18 +53,14 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
         recyclerAccounts.setAdapter(adapter);
 
         accountViewModel = new ViewModelProvider(this.getActivity()).get(AccountViewModel.class);
-        accountNames = new ArrayList<>();
+        accountNames = accountViewModel.getAllAccountNames();
         accountViewModel.getAllAccounts().observe(getViewLifecycleOwner(), accounts -> adapter.setAccounts(accounts));
         accountViewModel.getAllAccountNames().observe(getViewLifecycleOwner(), strings -> {
-            int sizeBefore = accountNames.size();
-            int numberAdded = 0;
-            for (String s : strings) {
-                if (!accountNames.contains(s)){
-                    accountNames.add(s);
-                    numberAdded++;
-                }
+            if(strings.size()==1){
+                adapter.notifyItemInserted(adapter.getItemCount());
+            }else {
+                adapter.notifyDataSetChanged();
             }
-            adapter.notifyItemRangeInserted(sizeBefore, numberAdded);
         });
         Button btnAddPopup = binding.btnAddPopup;
         btnAddPopup.setOnClickListener(v -> CreatePopupWindow(v));
@@ -115,7 +113,7 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
                 Toast.makeText(v1.getContext(), "Enter an account name.", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if(accountNames.contains(etAccountName.getText().toString())){
+            if(accountNames.getValue().contains(etAccountName.getText().toString())){
                 Toast.makeText(v1.getContext(), "Account names cannot repeat.", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -127,9 +125,14 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
 
     @Override
     public void onItemLongClick(int position) {
+        List<String> accNames = accountNames.getValue();
 
-        String accName = accountNames.get(position);
-        Toast.makeText(this.getContext(), "Item in position " + position + " is called " + accName, Toast.LENGTH_SHORT).show();
-        accountViewModel.deleteByName(accountNames.get(position));
+        Log.d(TAG, "onItemLongClick: Current list of names are " + accNames);
+        if(accNames!=null){
+            String accName = accNames.get(position);
+            Toast.makeText(this.getContext(), "Item in position " + position + " is called " + accName, Toast.LENGTH_SHORT).show();
+            accountViewModel.deleteByName(accNames.get(position));
+
+        }
     }
 }

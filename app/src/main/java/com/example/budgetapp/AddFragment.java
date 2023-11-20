@@ -3,6 +3,7 @@ package com.example.budgetapp;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
@@ -28,8 +29,8 @@ public class AddFragment extends Fragment {
     private static final String TAG = "AddFragment";
     private AccountViewModel accountViewModel;
     private FragmentAddBinding binding;
-    private List<String> accountNames;
-    private Account activeAccount;
+    private LiveData<List<String>> accountNames;
+    private LiveData<Account> activeAccount;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,22 +41,22 @@ public class AddFragment extends Fragment {
         Spinner accSelector = binding.spnAccount;
         Button addButton = binding.btnAddTransaction;
 
-        // ViewModel Listeners
+
         accountViewModel = new ViewModelProvider(this.getActivity()).get(AccountViewModel.class);
-        accountNames = new ArrayList<>();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item, accountNames);
+        accountNames = accountViewModel.getAllAccountNames();
+        activeAccount = accountViewModel.getActiveAccount();
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        accSelector.setAdapter(adapter);
+
+
+        // ViewModel Listeners
         accountViewModel.getAllAccountNames().observe(getViewLifecycleOwner(), strings -> {
-            for (String s : strings) {
-                if (!accountNames.contains(s)){
-                    accountNames.add(s);
-                }
-            }
+            adapter.clear();
+            adapter.addAll(strings);
             adapter.notifyDataSetChanged();
             Log.d(TAG, "onChanged: Account names are " + strings);
         });
-        accountViewModel.getActiveAccount().observe(getViewLifecycleOwner(), account -> activeAccount = account);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        accSelector.setAdapter(adapter);
 
         addButton.setOnClickListener(v -> {
             EditText etAmount = binding.etAmount;
