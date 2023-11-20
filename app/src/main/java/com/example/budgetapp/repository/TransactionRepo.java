@@ -2,7 +2,7 @@ package com.example.budgetapp.repository;
 
 import androidx.lifecycle.LiveData;
 
-import com.example.budgetapp.repository.dao.TransactionDao;
+import com.example.budgetapp.dao.TransactionDao;
 import com.example.budgetapp.entity.Transaction;
 
 import java.util.List;
