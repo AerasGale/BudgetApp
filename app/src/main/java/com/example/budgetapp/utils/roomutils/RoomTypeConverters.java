@@ -1,8 +1,11 @@
 package com.example.budgetapp.utils.roomutils;
 
 import android.icu.util.TimeZone;
+import android.util.Log;
 
 import androidx.room.TypeConverter;
+
+import com.example.budgetapp.utils.GlobalConsts;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -11,6 +14,7 @@ import java.time.ZonedDateTime;
 import java.util.Currency;
 
 public class RoomTypeConverters {
+    private static final String TAG = "RoomTypeConverters";
     @TypeConverter
     public static long DateTimeToEpochSecond(ZonedDateTime date){
         return date.toEpochSecond();
@@ -21,15 +25,19 @@ public class RoomTypeConverters {
         return ZonedDateTime.ofInstant(instant, ZoneId.of(TimeZone.getDefault().getID()));
     }
 
-    // Just shift by 4 everytime, as the most decimal places is 4
     @TypeConverter
-    public static int BigDecimalToInt(BigDecimal money){
-        return money.movePointRight(4).intValue();
+    public static long BigDecimalToLong(BigDecimal money){
+        try {
+            return money.movePointRight(GlobalConsts.CURRENCY_MINOR_PLACES).longValueExact();
+        }catch (ArithmeticException arithmeticException){
+            Log.e(TAG, "BigDecimalToInt: Conversion Error " + arithmeticException, arithmeticException);
+            return Long.MAX_VALUE;
+        }
     }
     @TypeConverter
-    public static BigDecimal IntToBigDecimal(int money){
+    public static BigDecimal LongToBigDecimal(long money){
         BigDecimal bd = new BigDecimal(money);
-        return bd.movePointLeft(4);
+        return bd.movePointLeft(GlobalConsts.CURRENCY_MINOR_PLACES);
     }
 
     @TypeConverter
