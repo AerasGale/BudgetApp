@@ -35,12 +35,7 @@ public class AccountRepo {
 
 
     public void insertOne(Account account){
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                accountDao.insertOne(account);
-            }
-        });
+        executorService.execute(() -> accountDao.insertOne(account));
     }
     public void updateOne(Account account){
         executorService.execute(new Runnable() {

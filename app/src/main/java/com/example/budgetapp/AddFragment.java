@@ -20,17 +20,21 @@ import android.widget.Toast;
 
 import com.example.budgetapp.databinding.FragmentAddBinding;
 import com.example.budgetapp.entity.Account;
+import com.example.budgetapp.entity.TransactionType;
 import com.example.budgetapp.viewmodel.AccountViewModel;
+import com.example.budgetapp.viewmodel.TransactionViewModel;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AddFragment extends Fragment {
     private static final String TAG = "AddFragment";
     private AccountViewModel accountViewModel;
+    private TransactionViewModel transactionViewModel;
     private FragmentAddBinding binding;
     private LiveData<List<String>> accountNames;
-    private LiveData<Account> activeAccount;
+    private Account activeAccount;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,26 +45,35 @@ public class AddFragment extends Fragment {
         Spinner accSelector = binding.spnAccount;
         Button addButton = binding.btnAddTransaction;
 
-
         accountViewModel = new ViewModelProvider(this.getActivity()).get(AccountViewModel.class);
+        transactionViewModel = new ViewModelProvider(this.getActivity()).get(TransactionViewModel.class);
         accountNames = accountViewModel.getAllAccountNames();
-        activeAccount = accountViewModel.getActiveAccount();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         accSelector.setAdapter(adapter);
 
 
-        // ViewModel Listeners
+        // Listeners
         accountViewModel.getAllAccountNames().observe(getViewLifecycleOwner(), strings -> {
             adapter.clear();
             adapter.addAll(strings);
             adapter.notifyDataSetChanged();
             Log.d(TAG, "onChanged: Account names are " + strings);
         });
+        accountViewModel.getActiveAccount().observe(getViewLifecycleOwner(), account -> activeAccount = account);
 
         addButton.setOnClickListener(v -> {
             EditText etAmount = binding.etAmount;
+            Spinner spnAccount = binding.spnAccount;
             RadioGroup rgTransactionType = binding.rgTransactionType;
+
+            BigDecimal amount = new BigDecimal(etAmount.getText().toString());
+            TransactionType transactionType;
+            if(rgTransactionType.getCheckedRadioButtonId() == binding.rbIncome.getId()) {
+                transactionType = TransactionType.INCOME;
+            } else if (rgTransactionType.getCheckedRadioButtonId() == binding.rbExpense.getId()) {
+                transactionType = TransactionType.EXPENSE;
+            }
 
 
         });

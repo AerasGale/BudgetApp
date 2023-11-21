@@ -40,7 +40,7 @@
             android:inputType="numberDecimal"
             android:minHeight="@dimen/txt_box_min_height"
             android:hint="@string/label_starting_balance"
-            android:text="0.00"
+            android:text="@string/default_placeholder_decimal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/etAccountName"
             app:layout_constraintTop_toTopOf="@+id/etAccountName" />
