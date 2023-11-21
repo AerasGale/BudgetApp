@@ -52,11 +52,11 @@
                 android:id="@+id/accountBalance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/container_edge_margin"
                 android:text="TextView"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="@+id/accountName"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/accountName"
                 app:layout_constraintTop_toTopOf="@+id/accountName" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
