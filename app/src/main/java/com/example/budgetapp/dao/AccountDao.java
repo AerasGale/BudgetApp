@@ -9,6 +9,7 @@ import androidx.room.Update;
 
 import com.example.budgetapp.entity.Account;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Dao
@@ -28,5 +29,7 @@ public interface AccountDao {
     public LiveData<Account> getAccountByName(String name);
     @Query("SELECT * FROM accounts WHERE active_account = 1 LIMIT 1")
     public LiveData<Account> getActiveAccount();
+    @Query("SELECT SUM(account_balance) FROM accounts")
+    public LiveData<BigDecimal> getSumOfAccountBalance();
 
 }

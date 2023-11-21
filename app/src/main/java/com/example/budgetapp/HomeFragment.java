@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.budgetapp.adapter.AccountAdapter;
@@ -55,6 +56,12 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
             accountNames = new ArrayList<>();
             for(Account a: this.adapter.getAccounts()){
                 accountNames.add(a.getAccountName());
+            }
+        });
+        TextView tvBalanceSum = binding.tvBalanceSum;
+        accountViewModel.getBalanceSum().observe(getViewLifecycleOwner(),bigDecimal -> {
+            if(bigDecimal != null){
+                tvBalanceSum.setText(bigDecimal.toString());
             }
         });
         Button btnAddPopup = binding.btnAddPopup;

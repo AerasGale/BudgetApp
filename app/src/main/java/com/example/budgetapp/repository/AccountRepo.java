@@ -13,6 +13,7 @@ import com.example.budgetapp.dao.AccountDao;
 import com.example.budgetapp.database.BudgetDatabase;
 import com.example.budgetapp.entity.Account;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,6 +23,7 @@ public class AccountRepo {
     private AccountDao accountDao;
     private LiveData<List<Account>> allAccounts;
     private LiveData<List<String>> allAccountNames;
+    private LiveData<BigDecimal> balanceSum;
     private LiveData<Account> activeAccount;
     private ExecutorService executorService;
 
@@ -29,6 +31,7 @@ public class AccountRepo {
         accountDao = BudgetDatabase.getInstance(application).accountDao();
         allAccounts = accountDao.getAllAccounts();
         allAccountNames = accountDao.getAccountNames();
+        balanceSum = accountDao.getSumOfAccountBalance();
         activeAccount = accountDao.getActiveAccount();
         executorService = Executors.newSingleThreadExecutor();
     }
@@ -60,6 +63,9 @@ public class AccountRepo {
 
     public LiveData<List<String>> getAllAccountNames() {
         return allAccountNames;
+    }
+    public LiveData<BigDecimal> getBalanceSum(){
+        return balanceSum;
     }
     public LiveData<Account> getAccountByName(String name){
         LiveData<Account> acc =accountDao.getAccountByName(name);
