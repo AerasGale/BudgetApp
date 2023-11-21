@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.room.Query;
 
 import com.example.budgetapp.dao.AccountDao;
@@ -14,8 +15,11 @@ import com.example.budgetapp.database.BudgetDatabase;
 import com.example.budgetapp.entity.Account;
 
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class AccountRepo {
     private static final String TAG = "AccountRepo";
@@ -63,12 +67,6 @@ public class AccountRepo {
     }
     public LiveData<Account> getAccountByName(String name){
         LiveData<Account> acc =accountDao.getAccountByName(name);
-        String logmsg = "Account is not null";
-        if(acc == null){
-            logmsg = "Account is null";
-        }
-        Log.d(TAG, "getAccountByName: " + logmsg);
-
         return acc;
     }
     public LiveData<Account> getActiveAccount(){
@@ -89,21 +87,24 @@ public class AccountRepo {
             }
         });
     }
-
+    public LiveData<Boolean> accountNameExist(String accountName){
+        LiveData<Account> accountByName = accountDao.getAccountByName(accountName);
+        MediatorLiveData<Boolean> existsAccountByName = new MediatorLiveData<>();
+        existsAccountByName.addSource(accountByName, account -> {
+            existsAccountByName.setValue(account!= null);
+        });
+        return existsAccountByName;
+    }
     public void deleteByName(String name){
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                List<Account> accounts = allAccounts.getValue();
-                Log.d(TAG, "deleteByName->run: Name to delete is " + name);
-                for (Account a: accounts) {
-                    if(a.getAccountName().equals(name)){
-                        accountDao.deleteOne(a);
-                        break;
-                    }
+        executorService.execute(() -> {
+            List<Account> accounts = allAccounts.getValue();
+            Log.d(TAG, "deleteByName->run: Name to delete is " + name);
+            for (Account a: accounts) {
+                if(a.getAccountName().equals(name)){
+                    accountDao.deleteOne(a);
+                    break;
                 }
             }
         });
-
     }
 }

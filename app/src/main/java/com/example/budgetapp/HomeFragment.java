@@ -57,6 +57,7 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
                 accountNames.add(a.getAccountName());
             }
         });
+        accountViewModel.getToastMessage().observe(getViewLifecycleOwner(),s -> Toast.makeText(this.getContext(), s, Toast.LENGTH_SHORT).show());
         Button btnAddPopup = binding.btnAddPopup;
         btnAddPopup.setOnClickListener(v -> showPopupWindow(v));
 
@@ -119,24 +120,7 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
         EditText etAccountName = popupView.findViewById(R.id.etAccountName);
         EditText etStartingBalance = popupView.findViewById(R.id.etStartingBalance);
         btnAddAccount.setOnClickListener(v -> {
-            for(Account a: this.adapter.getAccounts()){
-                accountNames.add(a.getAccountName());
-            }
-
-            if(accountNames==null){
-                Toast.makeText(v.getContext(), "accountNames is null", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if(etAccountName.getText().length()<=0){
-                Toast.makeText(v.getContext(), "Enter an account name.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if(accountNames.contains(etAccountName.getText().toString())){
-                Toast.makeText(v.getContext(), "Account names cannot repeat.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            Account accountToAdd = new Account(etAccountName.getText().toString(), new BigDecimal(etStartingBalance.getText().toString()),iconResId.get(),false);
-            accountViewModel.insertOne(accountToAdd);
+            accountViewModel.createAccount(etAccountName.getText().toString(), new BigDecimal(etStartingBalance.getText().toString()),iconResId.get(), this);
             popupWindow.dismiss();
         });
     }

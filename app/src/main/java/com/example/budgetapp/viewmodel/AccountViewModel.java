@@ -1,15 +1,18 @@
 package com.example.budgetapp.viewmodel;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.budgetapp.entity.Account;
 import com.example.budgetapp.repository.AccountRepo;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AccountViewModel extends AndroidViewModel {
@@ -17,14 +20,15 @@ public class AccountViewModel extends AndroidViewModel {
     private LiveData<List<Account>> allAccounts;
     private LiveData<List<String>> allAccountNames;
     private LiveData<Account> activeAccount;
+    private MutableLiveData<String> toastMessage;
     public AccountViewModel(@NonNull Application application) {
         super(application);
         repo = new AccountRepo(application);
         allAccounts = repo.getAllAccounts();
         allAccountNames = repo.getAllAccountNames();
         activeAccount = repo.getActiveAccount();
+        toastMessage = new MutableLiveData<>();
     }
-
     public void insertOne(Account account){
         repo.insertOne(account);
     }
@@ -48,5 +52,23 @@ public class AccountViewModel extends AndroidViewModel {
         LiveData<Account> acc =  repo.getAccountByName(name);
         return acc;
     }
+    public LiveData<String> getToastMessage(){
+        return toastMessage;
+    }
+    public void createAccount(String accountName, BigDecimal startingBalance, int iconResId, LifecycleOwner lifecycleOwner){
+        if(accountName.trim().length()==0){
+            toastMessage.setValue("Enter an account name.");
+            return;
+        }
+        repo.accountNameExist(accountName).observe(lifecycleOwner, exists -> {
+            if(Boolean.TRUE.equals(exists)){
+                toastMessage.setValue("Account names cannot repeat.");
+            } else{
+                Account accountToAdd = new Account(accountName, startingBalance,iconResId,false);
+                repo.insertOne(accountToAdd);
+            }
+        });
 
+
+    }
 }
