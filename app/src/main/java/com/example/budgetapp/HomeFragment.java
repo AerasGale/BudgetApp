@@ -118,21 +118,21 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
         Button btnAddAccount = popupView.findViewById(R.id.btnAddAccount);
         EditText etAccountName = popupView.findViewById(R.id.etAccountName);
         EditText etStartingBalance = popupView.findViewById(R.id.etStartingBalance);
-        btnAddAccount.setOnClickListener(v1 -> {
+        btnAddAccount.setOnClickListener(v -> {
             for(Account a: this.adapter.getAccounts()){
                 accountNames.add(a.getAccountName());
             }
 
             if(accountNames==null){
-                Toast.makeText(v1.getContext(), "accountNames is null", Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(), "accountNames is null", Toast.LENGTH_SHORT).show();
                 return;
             }
             if(etAccountName.getText().length()<=0){
-                Toast.makeText(v1.getContext(), "Enter an account name.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(), "Enter an account name.", Toast.LENGTH_SHORT).show();
                 return;
             }
             if(accountNames.contains(etAccountName.getText().toString())){
-                Toast.makeText(v1.getContext(), "Account names cannot repeat.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(), "Account names cannot repeat.", Toast.LENGTH_SHORT).show();
                 return;
             }
             Account accountToAdd = new Account(etAccountName.getText().toString(), new BigDecimal(etStartingBalance.getText().toString()),iconResId.get(),false);
