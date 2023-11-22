@@ -126,6 +126,12 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
         Button btnAddAccount = popupView.findViewById(R.id.btnAddAccount);
         EditText etAccountName = popupView.findViewById(R.id.etAccountName);
         EditText etStartingBalance = popupView.findViewById(R.id.etStartingBalance);
+
+        etStartingBalance.setOnFocusChangeListener((v, hasFocus) -> {
+            if(hasFocus){
+                v.post(()-> ((EditText)v).selectAll());
+            }
+        });
         btnAddAccount.setOnClickListener(v -> {
             accountViewModel.createAccount(etAccountName.getText().toString(), new BigDecimal(etStartingBalance.getText().toString()),iconResId.get(), this);
             popupWindow.dismiss();
