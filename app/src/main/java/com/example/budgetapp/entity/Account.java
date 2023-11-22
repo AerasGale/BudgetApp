@@ -12,6 +12,8 @@ public class Account {
     @PrimaryKey
     @ColumnInfo(name = "account_name")
     @NonNull private String accountName;
+    @ColumnInfo(name = "starting_balance")
+    private BigDecimal startingBalance;
     @ColumnInfo(name = "account_balance")
     private BigDecimal accountBalance;
     @ColumnInfo(name = "icon_id")
@@ -19,18 +21,20 @@ public class Account {
     @ColumnInfo(name = "active_account")
     private boolean isActive;
 
-    public Account(String accountName, BigDecimal accountBalance, int iconResId, boolean isActive) {
+    public Account(@NonNull String accountName, BigDecimal startingBalance, int iconResId, boolean isActive) {
         this.accountName = accountName;
-        this.accountBalance = accountBalance;
+        this.startingBalance = startingBalance;
+        this.accountBalance = startingBalance;
         this.iconResId = iconResId;
         this.isActive = isActive;
     }
 
+    @NonNull
     public String getAccountName() {
         return accountName;
     }
 
-    public void setAccountName(String accountName) {
+    public void setAccountName(@NonNull String accountName) {
         this.accountName = accountName;
     }
 
@@ -40,6 +44,13 @@ public class Account {
 
     public void setAccountBalance(BigDecimal accountBalance) {
         this.accountBalance = accountBalance;
+    }
+
+    public BigDecimal getStartingBalance(){
+        return startingBalance;
+    }
+    public void setStartingBalance(BigDecimal startingBalance) {
+        this.startingBalance = startingBalance;
     }
 
     public int getIconResId() {
@@ -58,6 +69,7 @@ public class Account {
         isActive = active;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Account{" +
