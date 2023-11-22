@@ -20,7 +20,7 @@ public class AccountViewModel extends AndroidViewModel {
     private AccountRepo repo;
     private LiveData<List<Account>> allAccounts;
     private LiveData<List<String>> allAccountNames;
-    LiveData<BigDecimal> balanceSum;
+    private LiveData<BigDecimal> balanceSum;
     private LiveData<Account> activeAccount;
     private MutableLiveData<String> toastMessage;
     public AccountViewModel(@NonNull Application application) {
