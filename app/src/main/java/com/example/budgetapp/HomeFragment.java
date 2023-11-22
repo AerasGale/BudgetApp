@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -46,7 +47,11 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
                              Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
+        return root;
+    }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         RecyclerView recyclerAccounts = setUpRecyclerView();
 
         accountViewModel = new ViewModelProvider(this.requireActivity()).get(AccountViewModel.class);
@@ -67,8 +72,6 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
         });
         Button btnAddPopup = binding.btnAddPopup;
         btnAddPopup.setOnClickListener(this::showPopupWindow);
-
-        return root;
     }
 
     private RecyclerView setUpRecyclerView(){
