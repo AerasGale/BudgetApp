@@ -26,7 +26,7 @@ public interface AccountDao {
     @Query("SELECT account_name FROM accounts")
     public LiveData<List<String>> getAccountNames();
     @Query("SELECT * FROM accounts WHERE account_name = :name")
-    public LiveData<Account> getAccountByName(String name);
+    public Account getAccountByName(String name);
     @Query("SELECT * FROM accounts WHERE active_account = 1 LIMIT 1")
     public LiveData<Account> getActiveAccount();
     @Query("SELECT SUM(account_balance) FROM accounts")
