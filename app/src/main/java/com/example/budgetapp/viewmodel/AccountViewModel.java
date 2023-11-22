@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.budgetapp.entity.Account;
+import com.example.budgetapp.exceptions.CannotVerifyDataException;
 import com.example.budgetapp.repository.AccountRepo;
 
 import java.math.BigDecimal;
@@ -44,13 +45,8 @@ public class AccountViewModel extends AndroidViewModel {
     public LiveData<List<Account>> getAllAccounts() {
         return allAccounts;
     }
-
     public LiveData<List<String>> getAllAccountNames() {
         return allAccountNames;
-    }
-    public LiveData<Account> getAccountByName(String name){
-        LiveData<Account> acc =  repo.getAccountByName(name);
-        return acc;
     }
     public LiveData<String> getToastMessage(){
         return toastMessage;
@@ -60,15 +56,17 @@ public class AccountViewModel extends AndroidViewModel {
             toastMessage.setValue("Enter an account name.");
             return;
         }
-        repo.accountNameExist(accountName).observe(lifecycleOwner, exists -> {
-            if(Boolean.TRUE.equals(exists)){
+        try{
+            if(repo.accountNameExist(accountName)){
                 toastMessage.setValue("Account names cannot repeat.");
-            } else{
-                Account accountToAdd = new Account(accountName, startingBalance,iconResId,false);
-                repo.insertOne(accountToAdd);
+                return;
             }
-        });
+        } catch (CannotVerifyDataException e){
+            toastMessage.setValue(e.getMessage());
+        }
 
+        Account accountToAdd = new Account(accountName, startingBalance,iconResId,false);
+        repo.insertOne(accountToAdd);
 
     }
 }

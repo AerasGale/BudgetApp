@@ -13,6 +13,7 @@ import androidx.room.Query;
 import com.example.budgetapp.dao.AccountDao;
 import com.example.budgetapp.database.BudgetDatabase;
 import com.example.budgetapp.entity.Account;
+import com.example.budgetapp.exceptions.CannotVerifyDataException;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -20,6 +21,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class AccountRepo {
     private static final String TAG = "AccountRepo";
@@ -65,10 +68,6 @@ public class AccountRepo {
     public LiveData<List<String>> getAllAccountNames() {
         return allAccountNames;
     }
-    public LiveData<Account> getAccountByName(String name){
-        LiveData<Account> acc =accountDao.getAccountByName(name);
-        return acc;
-    }
     public LiveData<Account> getActiveAccount(){
         return activeAccount;
     }
@@ -87,13 +86,14 @@ public class AccountRepo {
             }
         });
     }
-    public LiveData<Boolean> accountNameExist(String accountName){
-        LiveData<Account> accountByName = accountDao.getAccountByName(accountName);
-        MediatorLiveData<Boolean> existsAccountByName = new MediatorLiveData<>();
-        existsAccountByName.addSource(accountByName, account -> {
-            existsAccountByName.setValue(account!= null);
-        });
-        return existsAccountByName;
+    public Boolean accountNameExist(String accountName) {
+        Future<Account> future = executorService.submit(() -> accountDao.getAccountByName(accountName));
+        try {
+            Account account = future.get(2, TimeUnit.SECONDS); // Timeout after 2 seconds
+            return account != null;
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            throw new CannotVerifyDataException("Cannot tell if account name exists.", e);
+        }
     }
     public void deleteByName(String name){
         executorService.execute(() -> {
