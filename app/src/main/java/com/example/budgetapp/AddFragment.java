@@ -25,7 +25,6 @@ import com.example.budgetapp.viewmodel.AccountViewModel;
 import com.example.budgetapp.viewmodel.TransactionViewModel;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 public class AddFragment extends Fragment {
@@ -69,12 +68,15 @@ public class AddFragment extends Fragment {
 
             BigDecimal amount = new BigDecimal(etAmount.getText().toString());
             TransactionType transactionType;
+
             if(rgTransactionType.getCheckedRadioButtonId() == binding.rbIncome.getId()) {
                 transactionType = TransactionType.INCOME;
             } else if (rgTransactionType.getCheckedRadioButtonId() == binding.rbExpense.getId()) {
                 transactionType = TransactionType.EXPENSE;
+            } else {
+                return;
             }
-
+            transactionViewModel.createTransaction(activeAccount.getAccountName(), transactionType,amount);
 
         });
         accSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

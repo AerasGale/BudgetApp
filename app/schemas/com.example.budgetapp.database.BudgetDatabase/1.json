@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "5d9e55d2211437dd682a2c8ad00788ba",
+    "identityHash": "1f852cb6a9f401013ba0a275fa01cac7",
     "entities": [
       {
         "tableName": "accounts",
@@ -50,7 +50,7 @@
       },
       {
         "tableName": "transactions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`trx_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `account_name` TEXT, `transaction_type` TEXT, `entry_time` INTEGER, `description` TEXT, `amount` INTEGER, FOREIGN KEY(`account_name`) REFERENCES `accounts`(`account_name`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`trx_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `account_name` TEXT, `transaction_type` TEXT, `entry_time` INTEGER, `amount` INTEGER, FOREIGN KEY(`account_name`) REFERENCES `accounts`(`account_name`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "trxId",
@@ -74,12 +74,6 @@
             "fieldPath": "entryTime",
             "columnName": "entry_time",
             "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "description",
-            "columnName": "description",
-            "affinity": "TEXT",
             "notNull": false
           },
           {
@@ -124,7 +118,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5d9e55d2211437dd682a2c8ad00788ba')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1f852cb6a9f401013ba0a275fa01cac7')"
     ]
   }
 }

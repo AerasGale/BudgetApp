@@ -28,17 +28,14 @@ public class Transaction {
     private TransactionType trxType;
     @ColumnInfo(name = "entry_time")
     private ZonedDateTime entryTime;
-    @ColumnInfo(name = "description")
-    private String description;
     @ColumnInfo(name = "amount")
     private BigDecimal amount;
 
-    public Transaction(String accountName, TransactionType trxType, ZonedDateTime entryTime, String description, BigDecimal amount) {
+    public Transaction(String accountName, TransactionType trxType, ZonedDateTime entryTime, BigDecimal amount) {
 
         this.accountName = accountName;
         this.trxType = trxType;
         this.entryTime = entryTime;
-        this.description = description;
         this.amount = amount;
     }
 
@@ -74,13 +71,7 @@ public class Transaction {
         this.entryTime = entryTime;
     }
 
-    public String getDescription() {
-        return description;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public BigDecimal getAmount() {
         return amount;
@@ -97,7 +88,6 @@ public class Transaction {
                 ", accountName='" + accountName + '\'' +
                 ", trxType=" + trxType +
                 ", entryTime=" + entryTime +
-                ", description='" + description + '\'' +
                 ", amount=" + amount +
                 '}';
     }
