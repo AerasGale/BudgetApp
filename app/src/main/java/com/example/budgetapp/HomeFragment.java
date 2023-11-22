@@ -3,8 +3,8 @@ package com.example.budgetapp;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,7 +42,7 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
     private AccountAdapter adapter;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -66,7 +66,7 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
             }
         });
         Button btnAddPopup = binding.btnAddPopup;
-        btnAddPopup.setOnClickListener(v -> showPopupWindow(v));
+        btnAddPopup.setOnClickListener(this::showPopupWindow);
 
         return root;
     }

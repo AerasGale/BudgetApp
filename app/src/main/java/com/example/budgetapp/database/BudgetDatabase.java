@@ -1,7 +1,6 @@
 package com.example.budgetapp.database;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -33,18 +32,14 @@ public abstract class BudgetDatabase extends RoomDatabase {
         if(INSTANCE == null){
             synchronized (BudgetDatabase.class){
                 if(INSTANCE == null){
-                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(), BudgetDatabase.class, "budgetdb")
+                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(), BudgetDatabase.class, "budget_db")
+                            .fallbackToDestructiveMigration()
                             .addCallback(roomCallback)
                             .build();
                     Log.d(TAG, "getInstance: Instance created");
 //                    new TriggerCreateAsyncTask(INSTANCE).execute();
                     ExecutorService executor = Executors.newSingleThreadExecutor();
-                    executor.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            INSTANCE.query("select 1", null);
-                        }
-                    });
+                    executor.execute(() -> INSTANCE.query("select 1", null));
                 }
 
             }
@@ -52,19 +47,14 @@ public abstract class BudgetDatabase extends RoomDatabase {
         return INSTANCE;
     }
 
-    private static RoomDatabase.Callback roomCallback = new Callback() {
+    private static final RoomDatabase.Callback roomCallback = new Callback() {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
             super.onCreate(db);
             Log.d(TAG, "onCreate: Callback called");
 
             ExecutorService executor = Executors.newSingleThreadExecutor();
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    INSTANCE.preloadData(INSTANCE.accountDao());
-                }
-            });
+            executor.execute(() -> INSTANCE.preloadData(INSTANCE.accountDao()));
         }
     };
     private void preloadData(AccountDao accountDao){
