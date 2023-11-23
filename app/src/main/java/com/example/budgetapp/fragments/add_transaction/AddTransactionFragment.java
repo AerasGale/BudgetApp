@@ -1,4 +1,4 @@
-package com.example.budgetapp;
+package com.example.budgetapp.fragments.add_transaction;
 
 import android.os.Bundle;
 
@@ -18,48 +18,45 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.budgetapp.databinding.FragmentAddBinding;
-import com.example.budgetapp.entity.Account;
-import com.example.budgetapp.entity.TransactionType;
-import com.example.budgetapp.viewmodel.AccountViewModel;
-import com.example.budgetapp.viewmodel.TransactionViewModel;
+import com.example.budgetapp.databinding.FragmentAddTransactionBinding;
+import com.example.budgetapp.transaction.TransactionType;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public class AddFragment extends Fragment {
+public class AddTransactionFragment extends Fragment {
     private static final String TAG = "AddFragment";
-    private AccountViewModel accountViewModel;
-    private TransactionViewModel transactionViewModel;
-    private FragmentAddBinding binding;
+    private static final String SPINNER_SELECTED_ITEM = "arg_selected_item";
+    private AddViewModel addViewModel;
+    private FragmentAddTransactionBinding binding;
     private LiveData<List<String>> accountNames;
-    private Account activeAccount;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentAddBinding.inflate(inflater, container, false);
+        binding = FragmentAddTransactionBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         Spinner accSelector = binding.spnAccount;
         Button addButton = binding.btnAddTransaction;
 
-        accountViewModel = new ViewModelProvider(this.getActivity()).get(AccountViewModel.class);
-        transactionViewModel = new ViewModelProvider(this.getActivity()).get(TransactionViewModel.class);
-        accountNames = accountViewModel.getAllAccountNames();
+        addViewModel = new ViewModelProvider(this.getActivity()).get(AddViewModel.class);
+        accountNames = addViewModel.getAllAccountNames();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         accSelector.setAdapter(adapter);
+        if(savedInstanceState!= null){
+            accSelector.setSelection(savedInstanceState.getInt(SPINNER_SELECTED_ITEM, 0));
+        }
 
 
         // Listeners
-        accountViewModel.getAllAccountNames().observe(getViewLifecycleOwner(), strings -> {
+        addViewModel.getAllAccountNames().observe(getViewLifecycleOwner(), strings -> {
             adapter.clear();
             adapter.addAll(strings);
             adapter.notifyDataSetChanged();
             Log.d(TAG, "onChanged: Account names are " + strings);
         });
-        accountViewModel.getActiveAccount().observe(getViewLifecycleOwner(), account -> activeAccount = account);
 
         addButton.setOnClickListener(v -> {
             EditText etAmount = binding.etAmount;
@@ -76,8 +73,7 @@ public class AddFragment extends Fragment {
             } else {
                 return;
             }
-            transactionViewModel.createTransaction(activeAccount.getAccountName(), transactionType,amount);
-
+            addViewModel.createTransaction(accSelector.getSelectedItem().toString(), amount, transactionType);
         });
         accSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -85,7 +81,7 @@ public class AddFragment extends Fragment {
                 String selected = parent.getSelectedItem().toString();
                 if(selected!=null){
                     Toast.makeText(parent.getContext(), "Selected " + selected, Toast.LENGTH_SHORT).show();
-                    accountViewModel.setActiveAccount(selected);
+
                 }
             }
 
@@ -97,5 +93,4 @@ public class AddFragment extends Fragment {
 
         return root;
     }
-
 }

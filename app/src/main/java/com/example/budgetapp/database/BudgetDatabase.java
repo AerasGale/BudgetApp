@@ -11,10 +11,10 @@ import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.budgetapp.R;
-import com.example.budgetapp.dao.AccountDao;
-import com.example.budgetapp.dao.TransactionDao;
-import com.example.budgetapp.entity.Account;
-import com.example.budgetapp.entity.Transaction;
+import com.example.budgetapp.account.AccountDao;
+import com.example.budgetapp.transaction.TransactionDao;
+import com.example.budgetapp.account.Account;
+import com.example.budgetapp.transaction.Transaction;
 import com.example.budgetapp.utils.roomutils.RoomTypeConverters;
 
 import java.math.BigDecimal;
@@ -58,9 +58,9 @@ public abstract class BudgetDatabase extends RoomDatabase {
         }
     };
     private void preloadData(AccountDao accountDao){
-        accountDao.insertOne(new Account("Bank", BigDecimal.ZERO, R.drawable.ic_bank, true));
-        accountDao.insertOne(new Account("Card", BigDecimal.ZERO, R.drawable.ic_cash, false));
-        accountDao.insertOne(new Account("Cash", BigDecimal.ZERO, R.drawable.ic_card, false));
+        accountDao.insertOne(new Account("Bank", BigDecimal.ZERO, R.drawable.ic_bank));
+        accountDao.insertOne(new Account("Card", BigDecimal.ZERO, R.drawable.ic_cash));
+        accountDao.insertOne(new Account("Cash", BigDecimal.ZERO, R.drawable.ic_card));
     }
 
 }

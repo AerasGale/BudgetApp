@@ -1,4 +1,4 @@
-package com.example.budgetapp.dao;
+package com.example.budgetapp.transaction;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -7,8 +7,8 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.budgetapp.entity.Transaction;
-import com.example.budgetapp.entity.TransactionType;
+import com.example.budgetapp.transaction.Transaction;
+import com.example.budgetapp.transaction.TransactionType;
 
 import java.math.BigDecimal;
 import java.util.List;

@@ -1,14 +1,13 @@
-package com.example.budgetapp.repository;
+package com.example.budgetapp.transaction;
 
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
-import com.example.budgetapp.dao.TransactionDao;
 import com.example.budgetapp.database.BudgetDatabase;
-import com.example.budgetapp.entity.Transaction;
-import com.example.budgetapp.entity.TransactionType;
 
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -38,7 +37,7 @@ public class TransactionRepo {
     public LiveData<List<Transaction>> getAllExpenses() {
         return allExpenses;
     }
-    public void insertOne(Transaction transaction){
+    private void insertOne(Transaction transaction){
         executorService.execute(() -> transactionDao.insertOne(transaction));
     }
     public void updateOne(Transaction transaction){
@@ -46,6 +45,10 @@ public class TransactionRepo {
     }
     public void deleteOne(Transaction transaction){
         executorService.execute(()-> transactionDao.deleteOne(transaction));
+    }
+    public void createAndInsertTransaction(String accountName, BigDecimal amount, TransactionType type){
+        Transaction transactionToInsert = new Transaction(accountName,type, ZonedDateTime.now(),amount);
+        insertOne(transactionToInsert);
     }
 
 }

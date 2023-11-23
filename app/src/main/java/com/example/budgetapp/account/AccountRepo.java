@@ -1,25 +1,17 @@
-package com.example.budgetapp.repository;
+package com.example.budgetapp.account;
 
 import android.app.Application;
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
-import androidx.room.Query;
 
-import com.example.budgetapp.dao.AccountDao;
-import com.example.budgetapp.dao.TransactionDao;
+import com.example.budgetapp.transaction.TransactionDao;
 import com.example.budgetapp.database.BudgetDatabase;
-import com.example.budgetapp.entity.Account;
-import com.example.budgetapp.entity.TransactionType;
+import com.example.budgetapp.transaction.TransactionType;
 import com.example.budgetapp.exceptions.CannotVerifyDataException;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -34,7 +26,6 @@ public class AccountRepo {
     private LiveData<List<Account>> allAccounts;
     private LiveData<List<String>> allAccountNames;
     private LiveData<BigDecimal> balanceSum;
-    private LiveData<Account> activeAccount;
     private ExecutorService executorService;
 
     public AccountRepo(Application application){
@@ -43,12 +34,11 @@ public class AccountRepo {
         allAccounts = accountDao.getAllAccounts();
         allAccountNames = accountDao.getAccountNames();
         balanceSum = accountDao.getSumOfAccountBalance();
-        activeAccount = accountDao.getActiveAccount();
         executorService = Executors.newSingleThreadExecutor();
     }
 
 
-    public void insertOne(Account account){
+    private void insertOne(Account account){
         executorService.execute(() -> accountDao.insertOne(account));
     }
     public LiveData<List<Account>> getAllAccounts() {
@@ -62,21 +52,6 @@ public class AccountRepo {
         return balanceSum;
     }
 
-    public LiveData<Account> getActiveAccount(){
-        return activeAccount;
-    }
-    public void setActiveAccount(String name){
-        executorService.execute(() -> {
-            List<Account> accounts = allAccounts.getValue();
-            for (Account a: accounts) {
-                if(a.getAccountName().equals(name))
-                    a.setActive(true);
-                else
-                    a.setActive(false);
-                accountDao.updateOne(a);
-            }
-        });
-    }
     public Boolean accountNameExist(String accountName) {
         Future<Account> future = executorService.submit(() -> accountDao.getAccountByName(accountName));
         try {
@@ -86,7 +61,7 @@ public class AccountRepo {
             throw new CannotVerifyDataException("Cannot tell if account name exists.", e);
         }
     }
-    public BigDecimal getCurrentBalanceOf(String name){
+    private BigDecimal getCurrentBalanceOf(String name){
         Future<BigDecimal> currentBalance = executorService.submit(()->{
             Account account = accountDao.getAccountByName(name);
             BigDecimal starting = account.getStartingBalance();
@@ -101,6 +76,10 @@ public class AccountRepo {
             throw new CannotVerifyDataException("Sum cannot be found.", e);
         }
     }
+    public void createAndInsertAccount(String accountName, BigDecimal startingBalance, int iconResId){
+        Account accountToAdd = new Account(accountName, startingBalance,iconResId);
+        insertOne(accountToAdd);
+    }
     public void deleteByName(String name){
         executorService.execute(() -> {
             List<Account> accounts = allAccounts.getValue();
@@ -112,5 +91,32 @@ public class AccountRepo {
                 }
             }
         });
+    }
+
+    public void updateBalance(String accountName) {
+        Future<Account> accountFuture = executorService.submit(() -> accountDao.getAccountByName(accountName));
+
+        try{
+            Account accountToUpdate = accountFuture.get(2, TimeUnit.SECONDS);
+            Future<BigDecimal> futureCurrentBalance = executorService.submit(()->{
+                BigDecimal starting = accountToUpdate.getStartingBalance();
+                BigDecimal income = transactionDao.getSumOfTypeFrom(TransactionType.INCOME, accountName);
+                BigDecimal expense = transactionDao.getSumOfTypeFrom(TransactionType.EXPENSE, accountName);
+                return starting.add(income).subtract(expense);
+            });
+            try{
+                BigDecimal currentBalance = futureCurrentBalance.get(2, TimeUnit.SECONDS);
+                executorService.execute(()-> {
+                    accountToUpdate.setAccountBalance(currentBalance);
+                    accountDao.updateOne(accountToUpdate);
+                });
+            } catch (InterruptedException | ExecutionException | TimeoutException e){
+                throw new CannotVerifyDataException("Sum cannot be found.", e);
+            }
+        }catch (InterruptedException | ExecutionException | TimeoutException e){
+            throw new CannotVerifyDataException("Cannot find account " + accountName, e);
+        }
+
+
     }
 }

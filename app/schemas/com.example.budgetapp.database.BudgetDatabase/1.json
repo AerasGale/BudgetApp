@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "1f852cb6a9f401013ba0a275fa01cac7",
+    "identityHash": "8c3eabf80225ebe4ff854f37a4eae440",
     "entities": [
       {
         "tableName": "accounts",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`account_name` TEXT NOT NULL, `starting_balance` INTEGER, `account_balance` INTEGER, `icon_id` INTEGER NOT NULL, `active_account` INTEGER NOT NULL, PRIMARY KEY(`account_name`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`account_name` TEXT NOT NULL, `starting_balance` INTEGER, `account_balance` INTEGER, `icon_id` INTEGER NOT NULL, PRIMARY KEY(`account_name`))",
         "fields": [
           {
             "fieldPath": "accountName",
@@ -29,12 +29,6 @@
           {
             "fieldPath": "iconResId",
             "columnName": "icon_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "isActive",
-            "columnName": "active_account",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -118,7 +112,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1f852cb6a9f401013ba0a275fa01cac7')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8c3eabf80225ebe4ff854f37a4eae440')"
     ]
   }
 }

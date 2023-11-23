@@ -7,16 +7,11 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.example.budgetapp.database.BudgetDatabase;
 import com.example.budgetapp.databinding.ActivityMainBinding;
-import com.example.budgetapp.entity.Account;
-import com.example.budgetapp.repository.AccountRepo;
-
-import java.math.BigDecimal;
+import com.example.budgetapp.account.AccountRepo;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";

@@ -1,4 +1,4 @@
-package com.example.budgetapp.entity;
+package com.example.budgetapp.transaction;
 
 public enum TransactionType {
     INCOME,

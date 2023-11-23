@@ -1,4 +1,4 @@
-package com.example.budgetapp.adapter;
+package com.example.budgetapp.fragments.home;
 
 import android.content.Context;
 import android.util.Log;
@@ -12,7 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.budgetapp.R;
-import com.example.budgetapp.entity.Account;
+import com.example.budgetapp.interfaces.RecyclerViewInterface;
+import com.example.budgetapp.account.Account;
 
 import java.util.ArrayList;
 import java.util.List;

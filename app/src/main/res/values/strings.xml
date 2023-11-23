@@ -20,6 +20,7 @@
     <string name="label_add_account">Add Account</string>
     <string name="default_placeholder_decimal">0.00</string>
     <string name="label_balance">Balance: </string>
+    <string name="label_records">Records</string>
 
     <string-array name="default_account_names">
         <item>Bank</item>

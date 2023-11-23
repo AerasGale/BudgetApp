@@ -1,10 +1,12 @@
-package com.example.budgetapp.entity;
+package com.example.budgetapp.transaction;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
+
+import com.example.budgetapp.account.Account;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;

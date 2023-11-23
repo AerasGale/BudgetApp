@@ -1,5 +1,6 @@
-package com.example.budgetapp;
+package com.example.budgetapp.fragments.home;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -24,11 +25,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.budgetapp.adapter.AccountAdapter;
-import com.example.budgetapp.adapter.RecyclerViewInterface;
+import com.example.budgetapp.R;
+import com.example.budgetapp.interfaces.RecyclerViewInterface;
 import com.example.budgetapp.databinding.FragmentHomeBinding;
-import com.example.budgetapp.entity.Account;
-import com.example.budgetapp.viewmodel.AccountViewModel;
+import com.example.budgetapp.account.Account;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class HomeFragment extends Fragment implements RecyclerViewInterface {
     private static final String TAG = "HomeFragment";
     private FragmentHomeBinding binding;
-    private AccountViewModel accountViewModel;
+    private HomeViewModel homeViewModel;
     private List<String> accountNames;
     private AccountAdapter adapter;
 
@@ -46,16 +46,20 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-        return root;
+        return binding.getRoot();
     }
+    @SuppressLint("SetTextI18n")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        RecyclerView recyclerAccounts = setUpRecyclerView();
+        setUpRecyclerView();
 
-        accountViewModel = new ViewModelProvider(this.requireActivity()).get(AccountViewModel.class);
-        accountViewModel.getAllAccounts().observe(getViewLifecycleOwner(), accounts -> {
+        homeViewModel = new ViewModelProvider(this.requireActivity()).get(HomeViewModel.class);
+        homeViewModel.getAllAccounts().observe(getViewLifecycleOwner(), accounts -> {
+
+
+
+
             adapter.setAccounts(accounts);
             adapter.notifyDataSetChanged();
             accountNames = new ArrayList<>();
@@ -63,9 +67,9 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
                 accountNames.add(a.getAccountName());
             }
         });
-        accountViewModel.getToastMessage().observe(getViewLifecycleOwner(),s -> Toast.makeText(this.getContext(), s, Toast.LENGTH_SHORT).show());
+        homeViewModel.getToastMessage().observe(getViewLifecycleOwner(), s -> Toast.makeText(this.getContext(), s, Toast.LENGTH_SHORT).show());
         TextView tvBalanceSum = binding.tvBalanceSum;
-        accountViewModel.getBalanceSum().observe(getViewLifecycleOwner(),bigDecimal -> {
+        homeViewModel.getBalanceSum().observe(getViewLifecycleOwner(), bigDecimal -> {
             if(bigDecimal != null){
                 tvBalanceSum.setText(bigDecimal.toString());
             }
@@ -74,14 +78,13 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
         btnAddPopup.setOnClickListener(this::showPopupWindow);
     }
 
-    private RecyclerView setUpRecyclerView(){
+    private void setUpRecyclerView(){
         RecyclerView recyclerAccounts = binding.recyclerAccounts;
         recyclerAccounts.setLayoutManager( new LinearLayoutManager(this.getContext()));
         recyclerAccounts.setHasFixedSize(true);
 
         adapter = new AccountAdapter(this.getContext(), this);
         recyclerAccounts.setAdapter(adapter);
-        return recyclerAccounts;
     }
     private void showPopupWindow(View v){
         View popupView = setupPopupView(v);
@@ -91,6 +94,7 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
         setupAddAccountButton(popupView, popupWindow, iconResId);
     }
 
+    @SuppressLint("InflateParams")
     private View setupPopupView(View v){
         LayoutInflater inflater = (LayoutInflater)v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         return inflater.inflate(R.layout.popup_add_account, null);
@@ -136,7 +140,7 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
             }
         });
         btnAddAccount.setOnClickListener(v -> {
-            accountViewModel.createAccount(etAccountName.getText().toString(), new BigDecimal(etStartingBalance.getText().toString()),iconResId.get(), this);
+            homeViewModel.createAccount(etAccountName.getText().toString(), new BigDecimal(etStartingBalance.getText().toString()),iconResId.get());
             popupWindow.dismiss();
         });
     }
@@ -149,7 +153,7 @@ public class HomeFragment extends Fragment implements RecyclerViewInterface {
             Toast.makeText(this.getContext(), "Item in position " + position + " is called " + accName, Toast.LENGTH_SHORT).show();
 
 
-            accountViewModel.deleteByName(accountNames.get(position));
+            homeViewModel.deleteAccountByName(accountNames.get(position));
 
         }
     }

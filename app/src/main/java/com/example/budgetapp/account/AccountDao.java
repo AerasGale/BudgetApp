@@ -1,4 +1,4 @@
-package com.example.budgetapp.dao;
+package com.example.budgetapp.account;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -7,7 +7,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.budgetapp.entity.Account;
+import com.example.budgetapp.account.Account;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -27,8 +27,6 @@ public interface AccountDao {
     public LiveData<List<String>> getAccountNames();
     @Query("SELECT * FROM accounts WHERE account_name = :name")
     public Account getAccountByName(String name);
-    @Query("SELECT * FROM accounts WHERE active_account = 1 LIMIT 1")
-    public LiveData<Account> getActiveAccount();
     @Query("SELECT SUM(account_balance) FROM accounts")
     public LiveData<BigDecimal> getSumOfAccountBalance();
 

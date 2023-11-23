@@ -1,4 +1,4 @@
-package com.example.budgetapp.entity;
+package com.example.budgetapp.account;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
@@ -18,15 +18,12 @@ public class Account {
     private BigDecimal accountBalance;
     @ColumnInfo(name = "icon_id")
     private int iconResId;
-    @ColumnInfo(name = "active_account")
-    private boolean isActive;
 
-    public Account(@NonNull String accountName, BigDecimal startingBalance, int iconResId, boolean isActive) {
+    public Account(@NonNull String accountName, BigDecimal startingBalance, int iconResId) {
         this.accountName = accountName;
         this.startingBalance = startingBalance;
         this.accountBalance = startingBalance;
         this.iconResId = iconResId;
-        this.isActive = isActive;
     }
 
     @NonNull
@@ -59,14 +56,6 @@ public class Account {
 
     public void setIconResId(int iconResId) {
         this.iconResId = iconResId;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
     }
 
     @NonNull
